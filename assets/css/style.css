@@ -10,7 +10,7 @@ File: style.css
 @import url(plugins/animate.min.css);
 
 @font-face {
-    font-family: 'Open Sans';
+  font-family: 'poppins';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -20,7 +20,7 @@ File: style.css
 
 /* cyrillic */
 @font-face {
-    font-family: 'Open Sans';
+  font-family: 'poppins';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -345,7 +345,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 
 body {
     margin: 0;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Poppins", sans-serif;
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.5;
@@ -10586,7 +10586,7 @@ a.text-dark:hover, a.text-dark:focus {
   h3 {
         page-break-after: avoid;
     }
-  @    page {
+  @page {
         size: a3;
     }
 
@@ -10628,7 +10628,7 @@ a.text-dark:hover, a.text-dark:focus {
     .table-dark td,
     .table-dark thead th,
     .table-dark tbody + tbody {
-        border-color: #e3eaef;
+    border-color: #e3eaef;
     }
 
     .table .thead-dark th {
@@ -10652,7 +10652,7 @@ a.text-dark:hover, a.text-dark:focus {
     font-weight: normal !important;
     font-variant: normal !important;
     text-transform: none !important;
-    speak: none;
+   
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -10664,7 +10664,7 @@ a.text-dark:hover, a.text-dark:focus {
     font-weight: normal !important;
     font-variant: normal !important;
     text-transform: none !important;
-    speak: none;
+    
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -10733,7 +10733,6 @@ a.text-dark:hover, a.text-dark:focus {
 .feather {
   /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'feather' !important;
-    speak: none;
     font-style: normal;
     font-weight: normal;
     font-variant: normal;
@@ -17309,7 +17308,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-  @    font-face {
+  @font-face {
         font-family: "Flaticon";
         src: url("../fonts/Flaticon.svg#Flaticon") format("svg");
     }
@@ -30185,3 +30184,13 @@ css tambahan
     height: 40px;   /* atur sesuai kebutuhan */
     width: auto;    /* biar proporsional */
 }
+
+
+.card-text li {
+  margin-bottom: 7px;
+}
+
+.card-text strong {
+  color: #2ecc71; /* hijau elegan */
+}
+
