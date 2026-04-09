@@ -61,3 +61,28 @@ function filterIndikator() {
     }
 }
 
+
+async function updateStatusOtomatis() {
+    const apiLink = "https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec";
+    
+    try {
+        const response = await fetch(apiLink);
+        const data = await response.json();
+
+        // Loop untuk update tampilan tabel
+        for (let key in data) {
+            let status = data[key];
+            let baris = document.getElementById(key); // Kita beri ID pada <tr> tabel
+
+            if (status === "Terisi") {
+                baris.classList.add("is-uploaded");
+                baris.querySelector(".status-label").innerHTML = '<i class="feather icon-check-circle text-c-green"></i>';
+            }
+        }
+    } catch (error) {
+        console.log("Gagal mengambil data Drive:", error);
+    }
+}
+
+// Jalankan fungsi saat halaman dibuka
+window.onload = updateStatusOtomatis;

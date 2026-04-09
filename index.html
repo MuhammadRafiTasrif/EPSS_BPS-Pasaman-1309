@@ -988,7 +988,9 @@
                     <div class="row align-items-center">
                       <div class="col-8">
                         <h4 class="text-white">Struktur Penilaian</h4>
-                        <h7 class="text-white m-b-0">Domain, Aspek, dan Indikator</h7>
+                        <h7 class="text-white m-b-0"
+                          >Domain, Aspek, dan Indikator</h7
+                        >
                       </div>
                       <div class="col-4 text-right">
                         <i class="feather icon-grid f-40 text-white"></i>
@@ -1191,66 +1193,104 @@
           </div>
 
           <div class="col-xl-12">
-    <div class="card">
-        <div class="card-header">
-            <h5>Daftar Indikator & Link Drive Dokumen</h5>
-        </div>
-        <div class="card-body">
-            <div class="row mb-4">
-                
-                <div class="col-md-4 mb-2">
+            <div class="card">
+              <div class="card-header">
+                <h5>Daftar Indikator & Link Drive Dokumen</h5>
+              </div>
+              <div class="card-body">
+                <div class="row mb-4">
+                  <div class="col-md-4 mb-2">
                     <label class="small font-weight-bold">Filter Domain:</label>
-                    <select id="filterDomain" class="form-control" onchange="filterIndikator()">
-                        <option value="">Semua Domain</option>
-                        <option value="Prinsip SDI">Prinsip Satu Data Indonesia</option>
-                        <option value="Kualitas Data">Kualitas Data</option>
-                        <option value="Proses Bisnis">Proses Bisnis Statistik</option>
-                        <option value="Kelembagaan">Kelembagaan</option>
-                        <option value="Statistik Nasional">Statistik Nasional</option>
+                    <select
+                      id="filterDomain"
+                      class="form-control"
+                      onchange="filterIndikator()"
+                    >
+                      <option value="">Semua Domain</option>
+                      <option value="Prinsip SDI">
+                        Prinsip Satu Data Indonesia
+                      </option>
+                      <option value="Kualitas Data">Kualitas Data</option>
+                      <option value="Proses Bisnis">
+                        Proses Bisnis Statistik
+                      </option>
+                      <option value="Kelembagaan">Kelembagaan</option>
+                      <option value="Statistik Nasional">
+                        Statistik Nasional
+                      </option>
                     </select>
+                  </div>
+                  <div class="col-md-4 mb-2">
+                    <label class="small font-weight-bold"
+                      >Cari Indikator:</label
+                    >
+                    <input
+                      type="text"
+                      id="searchIndikator"
+                      class="form-control"
+                      placeholder="Ketik nama indikator..."
+                      onkeyup="filterIndikator()"
+                    />
+                  </div>
                 </div>
-                <div class="col-md-4 mb-2">
-                    <label class="small font-weight-bold">Cari Indikator:</label>
-                    <input type="text" id="searchIndikator" class="form-control" placeholder="Ketik nama indikator..." onkeyup="filterIndikator()">
-                </div>
-            </div>
 
-            <div class="table-responsive table-scroll-container">
-                <table class="table table-hover mb-0" id="tabelIndikator">
+                <div class="table-responsive table-scroll-container">
+                  <table class="table table-hover mb-0" id="tabelIndikator">
                     <thead>
-                        <tr class="bg-light">
-                            <th>No</th>
-                            <th>Domain</th>
-                            <th>Aspek</th>
-                            <th>Indikator</th>
-                            <th class="text-center">Link Evidence</th>
-                        </tr>
+                      <tr class="bg-light">
+                        <th>No</th>
+                        <th>Domain</th>
+                        <th>Aspek</th>
+                        <th>Indikator</th>
+                        <th class="text-center">Link Evidence</th>
+                      </tr>
                     </thead>
                     <tbody id="bodyIndikator">
-                        <tr class="item-indikator" data-domain="Prinsip SDI" data-aspek="Standar Data">
-                            <td>1</td>
-                            <td><span class="badge badge-light-danger">Prinsip SDI</span></td>
-                            <td>Standar Data Statistik</td>
-                            <td>Pemenuhan Standar Data Statistik</td>
-                            <td class="text-center">
-                                <a href="LINK_DRIVE" target="_blank" class="btn btn-icon btn-outline-primary btn-sm"><i class="feather icon-external-link"></i></a>
-                            </td>
-                        </tr>
-                        <tr class="item-indikator" data-domain="Kualitas Data">
-    <td>2</td>
-    <td><span class="badge badge-light-warning">Kualitas Data</span></td>
-    <td>Relevansi</td>
-    <td>Identifikasi Kebutuhan Data</td>
-    <td class="text-center">
-        <a href="https://drive.google.com/drive/folders/1ilP2TlVRNPObAso29C6T1joG_zamHdeD?usp=drive_link" target="_blank" class="btn btn-outline-secondary btn-sm opacity-50"><i class="feather icon-upload"></i></a>
-    </td>
-</tr>
-                        </tbody>
-                </table>
+                      <tr
+                        id="1wEDc7Wk7Jn2iTInibSl-HUPid46nazcg?usp=drive_link"
+                        class="item-indikator"
+                        data-domain="Prinsip SDI"
+                      >
+                        <td>1</td>
+                        <td>Prinsip SDI</td>
+                        <td>Standar Data</td>
+                        <td>
+                          Pemenuhan Standar Data
+                          <span class="status-label"></span>
+                        </td>
+                        <td class="text-center">
+                          <a
+                            href="https://drive.google.com/drive/folders/1wEDc7Wk7Jn2iTInibSl-HUPid46nazcg?usp=drive_link"
+                            target="_blank"
+                            class="btn btn-sm btn-outline-primary"
+                            >Buka</a
+                          >
+                        </td>
+                      </tr>
+                      <tr class="item-indikator" data-domain="Kualitas Data">
+                        <td>2</td>
+                        <td>
+                          <span class="badge badge-light-warning"
+                            >Kualitas Data</span
+                          >
+                        </td>
+                        <td>Relevansi</td>
+                        <td>Identifikasi Kebutuhan Data</td>
+                        <td class="text-center">
+                          <a
+                            href="https://drive.google.com/drive/folders/1ilP2TlVRNPObAso29C6T1joG_zamHdeD?usp=drive_link"
+                            target="_blank"
+                            class="btn btn-outline-secondary btn-sm opacity-50"
+                            ><i class="feather icon-upload"></i
+                          ></a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-</div>
+          </div>
         </div>
         <!-- [ breadcrumb ] start -->
 
@@ -1642,19 +1682,31 @@
       </div>
     </div>
 
-<div class="modal fade" id="modalGambarDomain" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div
+      class="modal fade"
+      id="modalGambarDomain"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header bg-c-yellow">
-                <h5 class="modal-title text-white">Detail 5 Domain</h5>
-                <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
-            </div>
-            <div class="modal-body text-center">
-                <img src="assets/images/domain-epss.jpeg" class="img-fluid rounded" alt="Detail Domain">
-            </div>
+          <div class="modal-header bg-c-yellow">
+            <h5 class="modal-title text-white">Detail 5 Domain</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">
+            <img
+              src="assets/images/domain-epss.jpeg"
+              class="img-fluid rounded"
+              alt="Detail Domain"
+            />
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
     <!-- Required Js -->
     <script src="assets/js/vendor-all.min.js"></script>
