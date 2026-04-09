@@ -4829,7 +4829,7 @@ input[type="button"].btn-block {
 .card-body {
     flex: 1 1 auto;
     padding: 1.25rem;
-    text-align: justify;
+    text-align: left;
 }
 
 .card-title {
@@ -30194,3 +30194,73 @@ css tambahan
   color: #2ecc71; /* hijau elegan */
 }
 
+
+/* Custom Scroll untuk Tabel Materi */
+.table-scroll-container {
+    max-height: 500px; /* Batas tinggi untuk sekitar 10 baris */
+    overflow-y: auto;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+}
+
+/* Membuat Header Tabel Tetap di Atas saat di-scroll */
+.table-scroll-container thead th {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* Efek bayangan tipis agar terlihat terpisah */
+}
+
+/* Custom Scrollbar agar terlihat lebih modern (khusus Chrome/Edge/Safari) */
+.table-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+
+
+/* Efek Hover untuk Card Indikator */
+.update-card {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.update-card:hover {
+    transform: translateY(-10px); /* Card naik sedikit */
+    box-shadow: 0 15px 20px rgba(0,0,0,0.2);
+}
+
+.update-card i {
+    opacity: 0.8;
+}
+
+.update-card:hover i {
+    opacity: 1;
+    transform: scale(1.2); /* Ikon membesar */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Menandai baris yang sudah ada filenya */
+.is-uploaded {
+    background-color: rgba(40, 167, 69, 0.05) !important; /* Hijau sangat muda */
+}
+
+.is-uploaded td:nth-child(4) {
+    font-weight: 600;
+    color: #28a745;
+}
