@@ -67,9 +67,8 @@ function filterIndikator() {
 }
 
 async function updateStatusOtomatis() {
-  const apiLink =
-    "https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec";
-
+  // Menggunakan corsproxy.io untuk menjembatani permintaan dari Vercel ke Google
+const apiLink = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec");gi
   try {
     const response = await fetch(apiLink, {
       redirect: "follow", // Menjelaskan ke browser untuk mengikuti pengalihan Google
