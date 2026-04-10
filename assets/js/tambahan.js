@@ -67,29 +67,45 @@ function filterIndikator() {
 }
 
 async function updateStatusOtomatis() {
-  // Menggunakan corsproxy.io untuk menjembatani permintaan dari Vercel ke Google
-const apiLink = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec");gi
-  try {
-    const response = await fetch(apiLink, {
-      redirect: "follow", // Menjelaskan ke browser untuk mengikuti pengalihan Google
-    });
-    const data = await response.json();
+    // Gunakan URL /exec kamu yang muncul di gambar tadi
+    const urlGas = "https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec";
+    
+    // Gunakan AllOrigins untuk membungkus data agar tidak terkena CORS 403
+    const apiLink = `https://api.allorigins.win/get?url=${encodeURIComponent(urlGas)}`;
+    
+    console.log("Menghubungkan ke database Sheets melalui Proxy...");
 
-    // Loop untuk update tampilan tabel
-    for (let key in data) {
-      let status = data[key];
-      let baris = document.getElementById(key); // Kita beri ID pada <tr> tabel
+    try {
+        const response = await fetch(apiLink);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const rawData = await response.json();
+        // AllOrigins membungkus data di dalam properti 'contents'
+        const data = JSON.parse(rawData.contents); 
+        
+        console.log("Data Berhasil Dimuat:", data);
 
-      if (status === "Terisi") {
-        baris.classList.add("is-uploaded");
-        baris.querySelector(".status-label").innerHTML =
-          '<i class="feather icon-check-circle text-c-green"></i>';
-      }
+        for (let key in data) {
+            let status = data[key];
+            let baris = document.getElementById(key);
+
+            if (baris) {
+                let label = baris.querySelector(".status-label");
+                if (status === "Terisi") {
+                    baris.classList.add("is-uploaded");
+                    if (label) {
+                        label.innerHTML = ' <i class="feather icon-check-circle text-c-green"></i>';
+                    }
+                } else {
+                    if (label) label.innerHTML = "";
+                    baris.classList.remove("is-uploaded");
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Gagal memproses data database:", error);
     }
-  } catch (error) {
-    console.log("Gagal mengambil data Drive:", error);
-  }
 }
 
-// Jalankan fungsi saat halaman dibuka
-window.onload = updateStatusOtomatis;
+// Panggil fungsi saat halaman siap
+document.addEventListener('DOMContentLoaded', updateStatusOtomatis);
