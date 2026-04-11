@@ -14,7 +14,7 @@ function searchMateri() {
   }
 }
 
-function searchMateri() {
+function searchMateri2() {
   let input = document.getElementById("docSearch").value.toLowerCase();
   let rows = document
     .getElementById("materiList")
@@ -72,36 +72,32 @@ function filterIndikator() {
  * dan memperbarui status indikator serta progres bar di Dashboard.
  */
 
-// Konfigurasi ID Spreadsheet kamu
-const spreadsheetId = "1Rk1GEn8wBtOEaZAprXowlKoupOHVzDmJ2RvtqRwhwCNn4OjZ3y2uhb8NibXc6lObbvGUinYZcmMsOl";
+// Konfigurasi
+const spreadsheetId = "1w8aWjrc4jUToGymUxAfngIMb-DZ1qsiaWVQbCn6qvDY";
 
+// Fungsi untuk mengganti dinas (dipanggil saat tombol diklik)
 async function gantiDinas(namaSheet) {
-    // 1. Ubah Judul
     const judul = document.getElementById("judulDinas");
-    if (judul) {
-        judul.innerText = "Progres: " + (namaSheet === 'Pendidikan' ? 'Dinas Pendidikan' : 'Dinas Perkim, Perhubungan & LH');
-    }
+    if (judul) judul.innerText = "Progres: " + (namaSheet === 'Pendidikan' ? 'Dinas Pendidikan' : 'Dinas Perkim, Perhubungan & LH');
+    
+    // Update tampilan tombol agar terlihat mana yang aktif
+    document.querySelectorAll('.btn-group .btn').forEach(btn => {
+        btn.classList.replace('btn-primary', 'btn-outline-primary');
+    });
+    event.currentTarget.classList.replace('btn-outline-primary', 'btn-primary');
 
-    // 2. Ubah Style Tombol (Active/Inactive)
-    const btnP = document.getElementById("btnPendidikan");
-    const btnH = document.getElementById("btnPerkim");
-    if (namaSheet === 'Pendidikan') {
-        btnP.classList.replace("btn-outline-primary", "btn-primary");
-        btnH.classList.replace("btn-primary", "btn-outline-primary");
-    } else {
-        btnH.classList.replace("btn-outline-primary", "btn-primary");
-        btnP.classList.replace("btn-primary", "btn-outline-primary");
-    }
-
-    // 3. Ambil Data
     await updateStatusOtomatis(namaSheet);
 }
 
+// Fungsi utama ambil data
 async function updateStatusOtomatis(sheetName = "Pendidikan") {
-    // Link Gviz dengan parameter sheet name
     const apiLink = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
     try {
+        // RESET TAMPILAN (Penting agar tidak tumpang tindih)
+        document.querySelectorAll(".status-label").forEach(el => el.innerHTML = "");
+        document.querySelectorAll(".item-indikator").forEach(el => el.classList.remove("is-uploaded"));
+
         const response = await fetch(apiLink);
         const text = await response.text();
         const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/);
@@ -113,17 +109,9 @@ async function updateStatusOtomatis(sheetName = "Pendidikan") {
         let terisiCount = 0;
         const totalIndikator = 38;
 
-        // RESET: Bersihkan semua centang dan warna baris sebelum mengisi data dinas baru
-        document.querySelectorAll(".status-label").forEach(el => el.innerHTML = "");
-        document.querySelectorAll(".item-indikator").forEach(el => {
-            el.classList.remove("is-uploaded");
-            el.style.backgroundColor = "";
-        });
-
-        // ISI DATA BARU
         rows.forEach(row => {
-            const idIndikator = row.c[0] ? row.c[0].v : null; // ID di Kolom A (ind_1, ind_2, dst)
-            const status = row.c[2] ? row.c[2].v : null;      // Status di Kolom C
+            const idIndikator = row.c[0] ? row.c[0].v : null; 
+            const status = row.c[2] ? row.c[2].v : null;
 
             if (idIndikator) {
                 const baris = document.getElementById(idIndikator);
@@ -138,31 +126,52 @@ async function updateStatusOtomatis(sheetName = "Pendidikan") {
             }
         });
 
-        // UPDATE PROGRESS BAR
-        const persentase = Math.round((terisiCount / totalIndikator) * 100);
-        const progressBar = document.getElementById("progressBar");
-        const progressText = document.getElementById("progressText");
-
-        if (progressBar) {
-            progressBar.style.width = persentase + "%";
-            progressBar.innerText = persentase + "%";
-            if (progressText) progressText.innerText = `${terisiCount} / ${totalIndikator} Indikator Terpenuhi`;
-        }
+        updateProgressBar(terisiCount, totalIndikator);
 
     } catch (error) {
-        console.error("Gagal memperbarui data dinas:", error);
+        console.error("Gagal sinkronisasi:", error);
     }
 }
 
-// Jalankan otomatis untuk Dinas Pendidikan saat pertama buka
-document.addEventListener('DOMContentLoaded', () => {
-    updateStatusOtomatis("Pendidikan");
-});
+function updateProgressBar(count, total) {
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const persentase = Math.round((count / total) * 100);
 
-// Default load pertama kali
-document.addEventListener('DOMContentLoaded', () => {
-    updateStatusOtomatis("Pendidikan");
-});
+    if (progressBar) {
+        progressBar.style.width = persentase + "%";
+        progressBar.innerText = persentase + "%";
+    }
+    if (progressText) {
+        progressText.innerText = `${count} / ${total} Indikator Terpenuhi`;
+    }
+}
+
+// SOLUSI SIDEBAR: Gunakan window.onload agar script template jalan duluan
+window.onload = function() {
+    console.log("Template siap, sidebar aktif.");
+    // Jalankan ambil data setelah semua script template selesai diproses
+    setTimeout(() => {
+        updateStatusOtomatis("Pendidikan");
+    }, 500); 
+};
+
+// Fungsi Search (Hanya satu versi agar tidak bentrok)
+function filterIndikator() {
+    let inputSearch = document.getElementById("searchIndikator").value.toLowerCase();
+    let selectDomain = document.getElementById("filterDomain").value;
+    let rows = document.getElementsByClassName("item-indikator");
+
+    for (let i = 0; i < rows.length; i++) {
+        let textIndikator = rows[i].innerText.toLowerCase();
+        let domainValue = rows[i].getAttribute("data-domain");
+
+        let matchSearch = textIndikator.includes(inputSearch);
+        let matchDomain = selectDomain === "" || domainValue === selectDomain;
+
+        rows[i].style.display = (matchSearch && matchDomain) ? "" : "none";
+    }
+}
 
 /**
  * Fungsi untuk memperbarui elemen Progres Bar di HTML
