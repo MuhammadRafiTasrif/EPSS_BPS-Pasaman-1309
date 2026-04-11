@@ -66,46 +66,134 @@ function filterIndikator() {
   }
 }
 
-async function updateStatusOtomatis() {
-    // Gunakan URL /exec kamu yang muncul di gambar tadi
-    const urlGas = "https://script.google.com/macros/s/AKfycbzSe0WpkYSAQDO-CYYqom9ukzWiyX6hrISn-jIpptAKmFf1Ao9g_zapOK_sDgwPm7WiEg/exec";
-    
-    // Gunakan AllOrigins untuk membungkus data agar tidak terkena CORS 403
-    const apiLink = `https://api.allorigins.win/get?url=${encodeURIComponent(urlGas)}`;
-    
-    console.log("Menghubungkan ke database Sheets melalui Proxy...");
+/**
+ * DASHBOARD EPSS PASAMAN - AUTO SYNC & PROGRESS BAR
+ * Deskripsi: Mengambil data status dari Google Sheets (Public) 
+ * dan memperbarui status indikator serta progres bar di Dashboard.
+ */
+
+// Konfigurasi ID Spreadsheet kamu
+const spreadsheetId = "1Rk1GEn8wBtOEaZAprXowlKoupOHVzDmJ2RvtqRwhwCNn4OjZ3y2uhb8NibXc6lObbvGUinYZcmMsOl";
+
+async function gantiDinas(namaSheet) {
+    // 1. Ubah Judul
+    const judul = document.getElementById("judulDinas");
+    if (judul) {
+        judul.innerText = "Progres: " + (namaSheet === 'Pendidikan' ? 'Dinas Pendidikan' : 'Dinas Perkim, Perhubungan & LH');
+    }
+
+    // 2. Ubah Style Tombol (Active/Inactive)
+    const btnP = document.getElementById("btnPendidikan");
+    const btnH = document.getElementById("btnPerkim");
+    if (namaSheet === 'Pendidikan') {
+        btnP.classList.replace("btn-outline-primary", "btn-primary");
+        btnH.classList.replace("btn-primary", "btn-outline-primary");
+    } else {
+        btnH.classList.replace("btn-outline-primary", "btn-primary");
+        btnP.classList.replace("btn-primary", "btn-outline-primary");
+    }
+
+    // 3. Ambil Data
+    await updateStatusOtomatis(namaSheet);
+}
+
+async function updateStatusOtomatis(sheetName = "Pendidikan") {
+    // Link Gviz dengan parameter sheet name
+    const apiLink = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
     try {
         const response = await fetch(apiLink);
-        if (!response.ok) throw new Error('Network response was not ok');
+        const text = await response.text();
+        const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/);
         
-        const rawData = await response.json();
-        // AllOrigins membungkus data di dalam properti 'contents'
-        const data = JSON.parse(rawData.contents); 
+        if (!match) return;
         
-        console.log("Data Berhasil Dimuat:", data);
+        const jsonData = JSON.parse(match[1]);
+        const rows = jsonData.table.rows;
+        let terisiCount = 0;
+        const totalIndikator = 38;
 
-        for (let key in data) {
-            let status = data[key];
-            let baris = document.getElementById(key);
+        // RESET: Bersihkan semua centang dan warna baris sebelum mengisi data dinas baru
+        document.querySelectorAll(".status-label").forEach(el => el.innerHTML = "");
+        document.querySelectorAll(".item-indikator").forEach(el => {
+            el.classList.remove("is-uploaded");
+            el.style.backgroundColor = "";
+        });
 
-            if (baris) {
-                let label = baris.querySelector(".status-label");
-                if (status === "Terisi") {
-                    baris.classList.add("is-uploaded");
-                    if (label) {
-                        label.innerHTML = ' <i class="feather icon-check-circle text-c-green"></i>';
+        // ISI DATA BARU
+        rows.forEach(row => {
+            const idIndikator = row.c[0] ? row.c[0].v : null; // ID di Kolom A (ind_1, ind_2, dst)
+            const status = row.c[2] ? row.c[2].v : null;      // Status di Kolom C
+
+            if (idIndikator) {
+                const baris = document.getElementById(idIndikator);
+                if (baris) {
+                    const label = baris.querySelector(".status-label");
+                    if (status === "Terisi") {
+                        terisiCount++;
+                        baris.classList.add("is-uploaded");
+                        if (label) label.innerHTML = ' <i class="feather icon-check-circle text-c-green"></i>';
                     }
-                } else {
-                    if (label) label.innerHTML = "";
-                    baris.classList.remove("is-uploaded");
                 }
             }
+        });
+
+        // UPDATE PROGRESS BAR
+        const persentase = Math.round((terisiCount / totalIndikator) * 100);
+        const progressBar = document.getElementById("progressBar");
+        const progressText = document.getElementById("progressText");
+
+        if (progressBar) {
+            progressBar.style.width = persentase + "%";
+            progressBar.innerText = persentase + "%";
+            if (progressText) progressText.innerText = `${terisiCount} / ${totalIndikator} Indikator Terpenuhi`;
         }
+
     } catch (error) {
-        console.error("Gagal memproses data database:", error);
+        console.error("Gagal memperbarui data dinas:", error);
     }
 }
 
-// Panggil fungsi saat halaman siap
-document.addEventListener('DOMContentLoaded', updateStatusOtomatis);
+// Jalankan otomatis untuk Dinas Pendidikan saat pertama buka
+document.addEventListener('DOMContentLoaded', () => {
+    updateStatusOtomatis("Pendidikan");
+});
+
+// Default load pertama kali
+document.addEventListener('DOMContentLoaded', () => {
+    updateStatusOtomatis("Pendidikan");
+});
+
+/**
+ * Fungsi untuk memperbarui elemen Progres Bar di HTML
+ */
+function updateProgressBar(count, total) {
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    
+    // Hitung persentase (bulatkan)
+    const persentase = Math.round((count / total) * 100);
+
+    if (progressBar && progressText) {
+        // Update lebar bar dan teks di dalamnya
+        progressBar.style.width = persentase + "%";
+        progressBar.innerText = persentase + "%";
+        progressBar.setAttribute("aria-valuenow", persentase);
+        
+        // Update teks keterangan di samping (Contoh: 15 / 38 Indikator)
+        progressText.innerText = `${count} / ${total} Indikator Terpenuhi`;
+        
+        // Opsional: Ganti warna bar jika sudah 100%
+        if (persentase === 100) {
+            progressBar.classList.replace("bg-success", "bg-primary");
+        }
+    }
+}
+
+/**
+ * Jalankan fungsi secara otomatis saat website dibuka
+ */
+document.addEventListener('DOMContentLoaded', () => {
+    updateStatusOtomatis();
+});
+
